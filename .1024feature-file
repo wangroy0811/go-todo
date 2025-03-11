@@ -1,0 +1,6 @@
+fileChangeLogs:
+  - .env
+  - '.1024'
+  - app
+  - logs
+  - logs/error.log
