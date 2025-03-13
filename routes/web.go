@@ -12,6 +12,7 @@ func Init() *mux.Router {
 	route.HandleFunc("/add", controllers.Add).Methods("POST")
 	route.HandleFunc("/delete/{id}", controllers.Delete)
 	route.HandleFunc("/complete/{id}", controllers.Complete)
+	route.HandleFunc("/todos/{id}", controllers.UpdateTodo).Methods("PUT")
 
 	return route
 }
