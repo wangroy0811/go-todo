@@ -4,6 +4,17 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css"
           integrity="sha384-SI27wrMjH3ZZ89r4o+fGIJtnzkAnFs3E4qz9DIYioCQ5l9Rd/7UAa8DHcaL8jkWt" crossorigin="anonymous">
     <title>Todo</title>
+    <style>
+        .edit-mode {
+            display: none;
+        }
+        .editing .edit-mode {
+            display: inline-block;
+        }
+        .editing .view-mode {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -50,12 +61,24 @@
                                 </td>
                             </tr>
                         {{else}}
-                            <tr>
-                                <td>{{.Item}}</td>
+                            <tr data-id="{{ .Id}}">
+                                <td>
+                                    <span class="view-mode">{{.Item}}</span>
+                                    <div class="edit-mode">
+                                        <input type="text" class="form-control todo-edit-input" value="{{.Item}}">
+                                    </div>
+                                </td>
                                 <td>Not Completed</td>
                                 <td>
-                                    <a href="/complete/{{ .Id}}"><button class="btn btn-primary">Complete</button></a>
-                                    <a href="/delete/{{ .Id}}"><button class="btn btn-danger">Delete</button></a>
+                                    <div class="view-mode">
+                                        <a href="/complete/{{ .Id}}"><button class="btn btn-primary">Complete</button></a>
+                                        <button class="btn btn-warning edit-btn" onclick="handleEdit({{ .Id}})">Edit</button>
+                                        <a href="/delete/{{ .Id}}"><button class="btn btn-danger">Delete</button></a>
+                                    </div>
+                                    <div class="edit-mode">
+                                        <button class="btn btn-success save-btn" onclick="saveEdit({{ .Id}})">Save</button>
+                                        <button class="btn btn-secondary cancel-btn" onclick="cancelEdit({{ .Id}})">Cancel</button>
+                                    </div>
                                 </td>
                             </tr>
                         {{end}}
@@ -65,5 +88,115 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Track the current editing row
+        let currentEditingId = null;
+
+        // Handle edit button click
+        function handleEdit(id) {
+            // Cancel any previous edit in progress
+            if (currentEditingId !== null && currentEditingId !== id) {
+                cancelEdit(currentEditingId);
+            }
+
+            // Set current editing id
+            currentEditingId = id;
+            
+            // Toggle edit mode for the row
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            row.classList.add('editing');
+            
+            // Focus on the input field
+            const input = row.querySelector('.todo-edit-input');
+            input.focus();
+            
+            // Position cursor at the end of the text
+            const inputLength = input.value.length;
+            input.setSelectionRange(inputLength, inputLength);
+            
+            // Add event listeners for keyboard input
+            input.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    saveEdit(id);
+                }
+            });
+            
+            // Add event listener for clicking outside
+            document.addEventListener('click', handleOutsideClick);
+        }
+
+        // Handle save button click
+        function saveEdit(id) {
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            const newValue = row.querySelector('.todo-edit-input').value.trim();
+            
+            // Don't save empty values
+            if (newValue === '') {
+                cancelEdit(id);
+                return;
+            }
+            
+            // Make AJAX request to update the todo
+            fetch(`/todos/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    item: newValue
+                }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Update the view with new value
+                    row.querySelector('.view-mode').textContent = newValue;
+                    
+                    // Exit edit mode
+                    row.classList.remove('editing');
+                    currentEditingId = null;
+                    
+                    // Remove the outside click handler
+                    document.removeEventListener('click', handleOutsideClick);
+                } else {
+                    console.error('Failed to update todo');
+                    // Optionally show an error message
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Handle cancel button click
+        function cancelEdit(id) {
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            
+            // Reset input value to original text
+            const originalText = row.querySelector('.view-mode').textContent;
+            row.querySelector('.todo-edit-input').value = originalText;
+            
+            // Exit edit mode
+            row.classList.remove('editing');
+            currentEditingId = null;
+            
+            // Remove the outside click handler
+            document.removeEventListener('click', handleOutsideClick);
+        }
+
+        // Handle clicks outside the editing area
+        function handleOutsideClick(event) {
+            if (currentEditingId !== null) {
+                const row = document.querySelector(`tr[data-id="${currentEditingId}"]`);
+                const clickedInsideRow = row.contains(event.target);
+                
+                // If click is outside the row being edited
+                if (!clickedInsideRow) {
+                    cancelEdit(currentEditingId);
+                }
+            }
+        }
+    </script>
 </body>
 </html>
