@@ -13,10 +13,6 @@ logs/
 *.test
 *.out
 
-# Clacky-related configuration
-.1024*
-!.1024
-.breakpoints
 
 # Environment and local config
 .env
