@@ -19,16 +19,3 @@ logs/
 
 # Go workspace file
 go.work
-
-# Clacky-related configuration
-.1024*
-!.1024
-.breakpoints
-
-# IDE-specific files
-.vscode/
-*.swp
-*.swo
-
-# Binaries for programs and plugins
-/bin/
