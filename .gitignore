@@ -19,3 +19,8 @@ logs/
 
 # Go workspace file
 go.work
+
+# Clacky-specific
+.1024*
+!.1024
+.breakpoints
