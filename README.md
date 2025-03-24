@@ -1,5 +1,7 @@
 # Go Todo
 
+root thread关闭后编辑，然后使用git提交编辑后的代码
+
 ![hero](https://res.cloudinary.com/ichtrojan/image/upload/v1574958373/Screenshot_2019-11-28_at_17.22.25_gyegdr.png)
 
 ## Introduction
