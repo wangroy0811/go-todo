@@ -20,14 +20,3 @@ logs/
 # Go workspace file
 go.work
 
-# Clacky-related configuration
-.1024*
-!.1024
-.breakpoints
-
-# Additional Go-specific files
-/bin/
-/pkg/
-
-# Log files
-*.log
