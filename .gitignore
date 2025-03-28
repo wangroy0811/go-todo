@@ -18,9 +18,4 @@ logs/
 .env
 
 # Go workspace file
-go.work
-
-# Clacky-related configuration
-.1024*
-!.1024
-.breakpoints
+go.wo
