@@ -1,21 +1,35 @@
-.idea/
-logs/
-.env
-.development
+# Clacky-related configuration
+.1024*
+!.1024
+.breakpoints
 
-# Go-specific
+# Go-specific files
 /vendor/
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
+*.o
+*.a
 *.test
 *.out
+*/main
+debug
+debug.test
+go.sum
 
+# Editor-specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
 
 # Environment and local config
 .env
+.development
+logs/
 
 # Go workspace file
-go.wo
+go.work
