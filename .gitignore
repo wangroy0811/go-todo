@@ -1,4 +1,3 @@
-
 # Go-specific files
 /vendor/
 *.exe
@@ -29,3 +28,20 @@ logs/
 
 # Go workspace file
 go.work
+
+# Binary file
+gotodo
+
+# Clacky-related configuration
+.1024*
+!.1024
+.breakpoints
+
+# Temp files
+tmp/
+.tmp/
+*.tmp
+
+# System files
+.DS_Store
+Thumbs.db
