@@ -32,10 +32,6 @@ go.work
 # Binary file
 gotodo
 
-# Clacky-related configuration
-.1024*
-!.1024
-.breakpoints
 
 # Temp files
 tmp/
