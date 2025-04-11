@@ -70,12 +70,35 @@ func Database() *sql.DB {
 		    id INT AUTO_INCREMENT,
 		    item TEXT NOT NULL,
 		    completed BOOLEAN DEFAULT FALSE,
+		    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		    PRIMARY KEY (id)
 		);
 	`)
 
 	if err != nil {
 		fmt.Println(err)
+	}
+
+	// Check if created_at column exists
+	var count int
+	err = database.QueryRow(`
+		SELECT COUNT(*) 
+		FROM information_schema.columns 
+		WHERE table_schema = 'gotodo' 
+		AND table_name = 'todos' 
+		AND column_name = 'created_at'
+	`).Scan(&count)
+
+	if err != nil {
+		fmt.Println("Error checking if created_at column exists:", err)
+	}
+
+	// Add created_at column if it doesn't exist
+	if count == 0 {
+		_, err = database.Exec(`ALTER TABLE todos ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`)
+		if err != nil {
+			fmt.Println("Error adding created_at column:", err)
+		}
 	}
 
 	return database

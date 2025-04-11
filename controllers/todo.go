@@ -9,18 +9,20 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 var (
 	id        int
 	item      string
 	completed int
+	createdAt time.Time
 	view      = template.Must(template.ParseFiles("./views/index.html"))
 	database  = config.Database()
 )
 
 func Show(w http.ResponseWriter, r *http.Request) {
-	statement, err := database.Query(`SELECT * FROM todos`)
+	statement, err := database.Query(`SELECT id, item, completed, created_at FROM todos`)
 
 	if err != nil {
 		fmt.Println(err)
@@ -29,7 +31,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	var todos []models.Todo
 
 	for statement.Next() {
-		err = statement.Scan(&id, &item, &completed)
+		err = statement.Scan(&id, &item, &completed, &createdAt)
 
 		if err != nil {
 			fmt.Println(err)
@@ -39,6 +41,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 			Id:        id,
 			Item:      item,
 			Completed: completed,
+			CreatedAt: createdAt,
 		}
 
 		todos = append(todos, todo)
@@ -54,8 +57,9 @@ func Show(w http.ResponseWriter, r *http.Request) {
 func Add(w http.ResponseWriter, r *http.Request) {
 
 	item := r.FormValue("item")
+	currentTime := time.Now()
 
-	_, err := database.Exec(`INSERT INTO todos (item) VALUE (?)`, item)
+	_, err := database.Exec(`INSERT INTO todos (item, created_at) VALUE (?, ?)`, item, currentTime)
 
 	if err != nil {
 		fmt.Println(err)
@@ -117,12 +121,28 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get the existing todo to preserve the created_at value
+	var existingTodo models.Todo
+	err = database.QueryRow("SELECT id, item, completed, created_at FROM todos WHERE id = ?", id).Scan(
+		&existingTodo.Id, 
+		&existingTodo.Item, 
+		&existingTodo.Completed,
+		&existingTodo.CreatedAt,
+	)
+	
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to fetch existing todo"})
+		fmt.Println(err)
+		return
+	}
+
 	// Create todo object with updated data
-	// Keep completed status as is
 	todo := models.Todo{
 		Id:        id,
 		Item:      todoData.Item,
-		Completed: 0, // When editing, we keep completed status unchanged (assuming incomplete)
+		Completed: existingTodo.Completed,
+		CreatedAt: existingTodo.CreatedAt, // Preserve the original creation time
 	}
 
 	// Update the todo in database
