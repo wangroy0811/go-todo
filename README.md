@@ -11,7 +11,7 @@ A simple todolist application written in Go
 ## Requirements
 * MySQL installed
 * Go installed
-
+终端提交
 ## Installation
 
 * Clone this repo 
