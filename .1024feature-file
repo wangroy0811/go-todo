@@ -1,2 +1,4 @@
 fileChangeLogs:
   - README.md
+  - '.1024'
+  - .env
