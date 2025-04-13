@@ -2,3 +2,5 @@ fileChangeLogs:
   - README.md
   - '.1024'
   - .env
+  - .gitignore
+  - 1.txt
