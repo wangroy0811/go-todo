@@ -42,7 +42,3 @@ tmp/
 .DS_Store
 Thumbs.db
 
-# Clacky-related configuration
-.1024*
-!.1024
-.breakpoints
