@@ -13,6 +13,8 @@
 debug
 debug.test
 go.sum
+/bin/
+/tmp/
 
 # Editor-specific files
 .idea/
@@ -32,7 +34,6 @@ go.work
 # Binary file
 gotodo
 
-
 # Temp files
 tmp/
 .tmp/
@@ -42,3 +43,7 @@ tmp/
 .DS_Store
 Thumbs.db
 
+# Clacky-specific files
+.1024*
+!.1024
+.breakpoints
