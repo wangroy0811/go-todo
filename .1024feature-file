@@ -8,3 +8,4 @@ fileChangeLogs:
   - 3.txt
   - logs
   - logs/error.log
+  - views/index.html
