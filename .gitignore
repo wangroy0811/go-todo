@@ -42,8 +42,3 @@ tmp/
 # System files
 .DS_Store
 Thumbs.db
-
-# Clacky-specific files
-.1024*
-!.1024
-.breakpoints
