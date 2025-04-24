@@ -1,4 +1,3 @@
-
 # Go-specific files
 /vendor/
 *.exe
@@ -16,6 +15,7 @@ debug.test
 go.sum
 /bin/
 /tmp/
+/pkg/
 
 # Editor-specific files
 .idea/
@@ -43,3 +43,8 @@ tmp/
 # System files
 .DS_Store
 Thumbs.db
+
+# Clacky-related configuration
+.1024*
+!.1024
+.breakpoints
