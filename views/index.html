@@ -14,7 +14,7 @@
         .editing .view-mode {
             display: none;
         }
-        body { background: linear-gradient(to bottom, #90EE90, #006400); }
+        body { background: linear-gradient(to bottom, #C8A2C8, #A682A6); }
     </style>
 </head>
 
@@ -107,26 +107,26 @@
 
             // Set current editing id
             currentEditingId = id;
-            
+
             // Toggle edit mode for the row
             const row = document.querySelector(`tr[data-id="${id}"]`);
             row.classList.add('editing');
-            
+
             // Focus on the input field
             const input = row.querySelector('.todo-edit-input');
             input.focus();
-            
+
             // Position cursor at the end of the text
             const inputLength = input.value.length;
             input.setSelectionRange(inputLength, inputLength);
-            
+
             // Add event listeners for keyboard input
             input.addEventListener('keypress', function(event) {
                 if (event.key === 'Enter') {
                     saveEdit(id);
                 }
             });
-            
+
             // Add event listener for clicking outside
             document.addEventListener('click', handleOutsideClick);
         }
@@ -135,13 +135,13 @@
         function saveEdit(id) {
             const row = document.querySelector(`tr[data-id="${id}"]`);
             const newValue = row.querySelector('.todo-edit-input').value.trim();
-            
+
             // Don't save empty values
             if (newValue === '') {
                 cancelEdit(id);
                 return;
             }
-            
+
             // Make AJAX request to update the todo
             fetch(`/todos/${id}`, {
                 method: 'PUT',
@@ -156,11 +156,11 @@
                 if (response.ok) {
                     // Update the view with new value
                     row.querySelector('.view-mode').textContent = newValue;
-                    
+
                     // Exit edit mode
                     row.classList.remove('editing');
                     currentEditingId = null;
-                    
+
                     // Remove the outside click handler
                     document.removeEventListener('click', handleOutsideClick);
                 } else {
@@ -176,15 +176,15 @@
         // Handle cancel button click
         function cancelEdit(id) {
             const row = document.querySelector(`tr[data-id="${id}"]`);
-            
+
             // Reset input value to original text
             const originalText = row.querySelector('.view-mode').textContent;
             row.querySelector('.todo-edit-input').value = originalText;
-            
+
             // Exit edit mode
             row.classList.remove('editing');
             currentEditingId = null;
-            
+
             // Remove the outside click handler
             document.removeEventListener('click', handleOutsideClick);
         }
@@ -194,7 +194,7 @@
             if (currentEditingId !== null) {
                 const row = document.querySelector(`tr[data-id="${currentEditingId}"]`);
                 const clickedInsideRow = row.contains(event.target);
-                
+
                 // If click is outside the row being edited
                 if (!clickedInsideRow) {
                     cancelEdit(currentEditingId);
