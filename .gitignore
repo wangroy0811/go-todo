@@ -1,3 +1,4 @@
+333333331111111vim终端编辑
 # Go-specific files
 /vendor/
 *.exe
@@ -43,3 +44,9 @@ tmp/
 # System files
 .DS_Store
 Thumbs.db
+
+# Clacky-related configuration
+.clacky/
+.1024*
+!.1024
+.breakpoints
