@@ -42,11 +42,12 @@
         <div class="card">
             <div class="card-header">Tasks</div>
             <div class="card-body">
+                <div id="message-area" style="display: none;" class="alert"></div> <!-- ADD THIS LINE -->
                 <table class="table table-borderless">
                     <thead>
                     <tr>
                         <th scope="col">Item</th>
-                        <th scope="col">创建时间</th>
+                        <th scope="col">更新时间</th>
                         <th scope="col">Status</th>
                         <th scope="col">Action</th>
                     </tr>
@@ -56,7 +57,7 @@
                         {{if .Completed}}
                             <tr>
                                 <td><strike>{{.Item}}</strike></td>
-                                <td>{{.FormatCreatedAt}}</td>
+                                <td>{{.FormatUpdatedAt}}</td>
                                 <td>Completed</td>
                                 <td>
                                     <button class="btn btn-primary" disabled>Complete</button>
@@ -71,7 +72,7 @@
                                         <input type="text" class="form-control todo-edit-input" value="{{.Item}}">
                                     </div>
                                 </td>
-                                <td>{{.FormatCreatedAt}}</td>
+                                <td>{{.FormatUpdatedAt}}</td>
                                 <td>Not Completed</td>
                                 <td>
                                     <div class="view-mode">
@@ -142,6 +143,13 @@
                 return;
             }
 
+            const messageArea = document.getElementById('message-area');
+            
+            // Show loading indicator
+            messageArea.textContent = 'Saving... Please wait.';
+            messageArea.className = 'alert alert-info';
+            messageArea.style.display = 'block';
+
             // Make AJAX request to update the todo
             fetch(`/todos/${id}`, {
                 method: 'PUT',
@@ -152,24 +160,37 @@
                     item: newValue
                 }),
             })
-            .then(response => {
+            .then(async response => {
                 if (response.ok) {
-                    // Update the view with new value
-                    row.querySelector('.view-mode').textContent = newValue;
-
-                    // Exit edit mode
-                    row.classList.remove('editing');
-                    currentEditingId = null;
-
-                    // Remove the outside click handler
-                    document.removeEventListener('click', handleOutsideClick);
+                    messageArea.textContent = 'Saved successfully! Reloading...';
+                    messageArea.className = 'alert alert-success';
+                    // Add a small delay before refreshing to allow server processing and message visibility
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500); // 500ms delay
                 } else {
-                    console.error('Failed to update todo');
-                    // Optionally show an error message
+                    let errorMsg = 'Failed to update todo. Please try again.';
+                    try {
+                        // Attempt to get a more specific error message from the server response
+                        const errorData = await response.json();
+                        if (errorData && errorData.error) {
+                            errorMsg = errorData.error;
+                        }
+                    } catch (e) {
+                        // If response is not JSON or other parsing error, use the generic message
+                        console.warn('Could not parse error response JSON:', e);
+                    }
+                    console.error('Failed to update todo, status:', response.status);
+                    messageArea.textContent = errorMsg;
+                    messageArea.className = 'alert alert-danger';
+                    messageArea.style.display = 'block';
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Error during fetch operation:', error);
+                messageArea.textContent = 'An unexpected error occurred. Please check your connection and try again.';
+                messageArea.className = 'alert alert-danger';
+                messageArea.style.display = 'block';
             });
         }
 
@@ -180,6 +201,10 @@
             // Reset input value to original text
             const originalText = row.querySelector('.view-mode').textContent;
             row.querySelector('.todo-edit-input').value = originalText;
+
+            // Hide message area on cancel
+            const messageArea = document.getElementById('message-area');
+            messageArea.style.display = 'none';
 
             // Exit edit mode
             row.classList.remove('editing');
@@ -197,7 +222,14 @@
 
                 // If click is outside the row being edited
                 if (!clickedInsideRow) {
-                    cancelEdit(currentEditingId);
+                    // Check if the click was on the message area
+                    const messageArea = document.getElementById('message-area');
+                    const clickedInsideMessageArea = messageArea.contains(event.target);
+
+                    // Cancel edit only if the click is outside the row AND outside the message area
+                    if (!clickedInsideMessageArea) {
+                         cancelEdit(currentEditingId);
+                    }
                 }
             }
         }

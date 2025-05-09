@@ -17,12 +17,13 @@ var (
 	item      string
 	completed int
 	createdAt time.Time
+	updatedAt time.Time
 	view      = template.Must(template.ParseFiles("./views/index.html"))
 	database  = config.Database()
 )
 
 func Show(w http.ResponseWriter, r *http.Request) {
-	statement, err := database.Query(`SELECT id, item, completed, created_at FROM todos`)
+	statement, err := database.Query(`SELECT id, item, completed, created_at, updated_at FROM todos`)
 
 	if err != nil {
 		fmt.Println(err)
@@ -31,7 +32,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	var todos []models.Todo
 
 	for statement.Next() {
-		err = statement.Scan(&id, &item, &completed, &createdAt)
+		err = statement.Scan(&id, &item, &completed, &createdAt, &updatedAt)
 
 		if err != nil {
 			fmt.Println(err)
@@ -42,6 +43,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 			Item:      item,
 			Completed: completed,
 			CreatedAt: createdAt,
+			UpdatedAt: updatedAt,
 		}
 
 		todos = append(todos, todo)
@@ -59,7 +61,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 	item := r.FormValue("item")
 	currentTime := time.Now()
 
-	_, err := database.Exec(`INSERT INTO todos (item, created_at) VALUE (?, ?)`, item, currentTime)
+	_, err := database.Exec(`INSERT INTO todos (item, created_at, updated_at) VALUE (?, ?, ?)`, item, currentTime, currentTime)
 
 	if err != nil {
 		fmt.Println(err)
@@ -84,8 +86,9 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 func Complete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
+	currentTime := time.Now()
 
-	_, err := database.Exec(`UPDATE todos SET completed = 1 WHERE id = ?`, id)
+	_, err := database.Exec(`UPDATE todos SET completed = 1, updated_at = ? WHERE id = ?`, currentTime, id)
 
 	if err != nil {
 		fmt.Println(err)
@@ -123,11 +126,12 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 
 	// Get the existing todo to preserve the created_at value
 	var existingTodo models.Todo
-	err = database.QueryRow("SELECT id, item, completed, created_at FROM todos WHERE id = ?", id).Scan(
+	err = database.QueryRow("SELECT id, item, completed, created_at, updated_at FROM todos WHERE id = ?", id).Scan(
 		&existingTodo.Id, 
 		&existingTodo.Item, 
 		&existingTodo.Completed,
 		&existingTodo.CreatedAt,
+		&existingTodo.UpdatedAt,
 	)
 	
 	if err != nil {
@@ -143,9 +147,12 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 		Item:      todoData.Item,
 		Completed: existingTodo.Completed,
 		CreatedAt: existingTodo.CreatedAt, // Preserve the original creation time
+		UpdatedAt: time.Now(), // Set updated_at to current time
 	}
+	fmt.Println("Setting updated time to:", todo.UpdatedAt.Format("2006-01-02 15:04:05"))
 
 	// Update the todo in database
+	fmt.Println("Sending to model layer with updated_at:", todo.UpdatedAt.Format("2006-01-02 15:04:05"))
 	err = models.UpdateTodo(todo)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -153,6 +160,7 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
+	fmt.Println("Todo with ID", id, "updated successfully with new updated_at time")
 
 	// Return success response
 	w.WriteHeader(http.StatusOK)
