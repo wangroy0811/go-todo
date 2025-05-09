@@ -71,6 +71,7 @@ func Database() *sql.DB {
 		    item TEXT NOT NULL,
 		    completed BOOLEAN DEFAULT FALSE,
 		    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 		    PRIMARY KEY (id)
 		);
 	`)
@@ -98,6 +99,34 @@ func Database() *sql.DB {
 		_, err = database.Exec(`ALTER TABLE todos ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP`)
 		if err != nil {
 			fmt.Println("Error adding created_at column:", err)
+		}
+	}
+
+	// Check if updated_at column exists
+	count = 0
+	err = database.QueryRow(`
+		SELECT COUNT(*) 
+		FROM information_schema.columns 
+		WHERE table_schema = 'gotodo' 
+		AND table_name = 'todos' 
+		AND column_name = 'updated_at'
+	`).Scan(&count)
+
+	if err != nil {
+		fmt.Println("Error checking if updated_at column exists:", err)
+	}
+
+	// Add updated_at column if it doesn't exist
+	if count == 0 {
+		_, err = database.Exec(`ALTER TABLE todos ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`)
+		if err != nil {
+			fmt.Println("Error adding updated_at column:", err)
+		} else {
+			// Initialize updated_at with created_at for existing records
+			_, err = database.Exec(`UPDATE todos SET updated_at = created_at WHERE updated_at IS NULL`)
+			if err != nil {
+				fmt.Println("Error initializing updated_at values:", err)
+			}
 		}
 	}
 
