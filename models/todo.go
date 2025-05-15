@@ -30,10 +30,10 @@ func (todo Todo) FormatUpdatedAt() string {
 	loc, err := time.LoadLocation("Asia/Shanghai")
 	if err != nil {
 		// Fallback to UTC if location loading fails
-		return todo.UpdatedAt.Format("2006-01-02 15:04:05")
+		return todo.UpdatedAt.Format("January 02, 2006 at 15:04:05")
 	}
 	// Convert the time to China timezone (UTC+8)
-	return todo.UpdatedAt.In(loc).Format("2006-01-02 15:04:05")
+	return todo.UpdatedAt.In(loc).Format("January 02, 2006 at 15:04:05")
 }
 
 // UpdateTodo updates an existing todo item in the database
