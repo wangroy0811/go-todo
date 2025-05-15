@@ -3,7 +3,7 @@
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css"
           integrity="sha384-SI27wrMjH3ZZ89r4o+fGIJtnzkAnFs3E4qz9DIYioCQ5l9Rd/7UAa8DHcaL8jkWt" crossorigin="anonymous">
-    <title>Todo</title>
+    <title>待办事项</title>
     <style>
         .edit-mode {
             display: none;
@@ -34,20 +34,20 @@
             transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             font-size: 16px;
-        ">Visit Official Website</a>
+        ">访问官方网站</a>
     </div>
 
     <div class="container">
         <div class="card">
-            <div class="card-header">Add a task</div>
+            <div class="card-header">添加任务</div>
             <div class="card-body">
                 <form action="/add" method="post">
                     <div class="form-group">
-                        <label for="Item">Item</label>
-                        <input type="text" class="form-control" name="item" placeholder="What do you want to do?">
-                        <small class="form-text text-muted">Enter what you want to procastinate 🙂</small>
+                        <label for="Item">项目</label>
+                        <input type="text" class="form-control" name="item" placeholder="您想做什么？">
+                        <small class="form-text text-muted">输入您想拖延的事情 🙂</small>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">提交</button>
                 </form>
             </div>
         </div>
@@ -56,16 +56,16 @@
     &nbsp;
     <div class="container">
         <div class="card">
-            <div class="card-header">Tasks</div>
+            <div class="card-header">任务</div>
             <div class="card-body">
                 <div id="message-area" style="display: none;" class="alert"></div> <!-- ADD THIS LINE -->
                 <table class="table table-borderless">
                     <thead>
                     <tr>
-                        <th scope="col">Item</th>
-                        <th scope="col">Updated At</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">项目</th>
+                        <th scope="col">更新时间</th>
+                        <th scope="col">状态</th>
+                        <th scope="col">操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -74,10 +74,10 @@
                             <tr>
                                 <td><strike>{{.Item}}</strike></td>
                                 <td>{{.FormatUpdatedAt}}</td>
-                                <td>Completed</td>
+                                <td>已完成</td>
                                 <td>
-                                    <button class="btn btn-primary" disabled>Complete</button>
-                                    <button class="btn btn-danger" disabled>Delete</button>
+                                    <button class="btn btn-primary" disabled>完成</button>
+                                    <button class="btn btn-danger" disabled>删除</button>
                                 </td>
                             </tr>
                         {{else}}
@@ -89,16 +89,16 @@
                                     </div>
                                 </td>
                                 <td>{{.FormatUpdatedAt}}</td>
-                                <td>Not Completed</td>
+                                <td>未完成</td>
                                 <td>
                                     <div class="view-mode">
-                                        <a href="/complete/{{ .Id}}"><button class="btn btn-primary">Complete</button></a>
-                                        <button class="btn btn-warning edit-btn" onclick="handleEdit({{ .Id}})">Edit</button>
-                                        <a href="/delete/{{ .Id}}"><button class="btn btn-danger">Delete</button></a>
+                                        <a href="/complete/{{ .Id}}"><button class="btn btn-primary">完成</button></a>
+                                        <button class="btn btn-warning edit-btn" onclick="handleEdit({{ .Id}})">编辑</button>
+                                        <a href="/delete/{{ .Id}}"><button class="btn btn-danger">删除</button></a>
                                     </div>
                                     <div class="edit-mode">
-                                        <button class="btn btn-success save-btn" onclick="saveEdit({{ .Id}})">Save</button>
-                                        <button class="btn btn-secondary cancel-btn" onclick="cancelEdit({{ .Id}})">Cancel</button>
+                                        <button class="btn btn-success save-btn" onclick="saveEdit({{ .Id}})">保存</button>
+                                        <button class="btn btn-secondary cancel-btn" onclick="cancelEdit({{ .Id}})">取消</button>
                                     </div>
                                 </td>
                             </tr>
@@ -162,7 +162,7 @@
             const messageArea = document.getElementById('message-area');
             
             // Show loading indicator
-            messageArea.textContent = 'Saving... Please wait.';
+            messageArea.textContent = '保存中... 请稍等。';
             messageArea.className = 'alert alert-info';
             messageArea.style.display = 'block';
 
@@ -178,14 +178,14 @@
             })
             .then(async response => {
                 if (response.ok) {
-                    messageArea.textContent = 'Saved successfully! Reloading...';
+                    messageArea.textContent = '保存成功！正在重新加载...';
                     messageArea.className = 'alert alert-success';
                     // Add a small delay before refreshing to allow server processing and message visibility
                     setTimeout(() => {
                         window.location.reload();
                     }, 500); // 500ms delay
                 } else {
-                    let errorMsg = 'Failed to update todo. Please try again.';
+                    let errorMsg = '更新待办事项失败，请重试。';
                     try {
                         // Attempt to get a more specific error message from the server response
                         const errorData = await response.json();
@@ -204,7 +204,7 @@
             })
             .catch(error => {
                 console.error('Error during fetch operation:', error);
-                messageArea.textContent = 'An unexpected error occurred. Please check your connection and try again.';
+                messageArea.textContent = '发生意外错误。请检查您的连接并重试。';
                 messageArea.className = 'alert alert-danger';
                 messageArea.style.display = 'block';
             });
