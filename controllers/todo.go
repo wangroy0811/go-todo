@@ -127,13 +127,13 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	// Get the existing todo to preserve the created_at value
 	var existingTodo models.Todo
 	err = database.QueryRow("SELECT id, item, completed, created_at, updated_at FROM todos WHERE id = ?", id).Scan(
-		&existingTodo.Id, 
-		&existingTodo.Item, 
+		&existingTodo.Id,
+		&existingTodo.Item,
 		&existingTodo.Completed,
 		&existingTodo.CreatedAt,
 		&existingTodo.UpdatedAt,
 	)
-	
+
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Failed to fetch existing todo"})
@@ -165,4 +165,17 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 	// Return success response
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Todo updated successfully"})
+}
+
+// ShowHomePage handles displaying the application homepage
+func ShowHomePage(w http.ResponseWriter, r *http.Request) {
+	// Create template for homepage
+	homepageView := template.Must(template.ParseFiles("./views/homepage.html"))
+
+	// Execute the template
+	err := homepageView.Execute(w, nil)
+
+	if err != nil {
+		fmt.Println(err)
+	}
 }
