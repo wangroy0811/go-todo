@@ -28,6 +28,7 @@ go.sum
 .env
 .development
 logs/
+*.log
 
 # Go workspace file
 go.work
@@ -43,3 +44,8 @@ tmp/
 # System files
 .DS_Store
 Thumbs.db
+
+# Clacky-related configuration
+.1024*
+!.1024
+.breakpoints
