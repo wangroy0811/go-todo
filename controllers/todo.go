@@ -13,13 +13,15 @@ import (
 )
 
 var (
-	id        int
-	item      string
+	id int
+	item string
 	completed int
 	createdAt time.Time
 	updatedAt time.Time
-	view      = template.Must(template.ParseFiles("./views/index.html"))
-	database  = config.Database()
+	view = template.Must(template.ParseFiles("./views/index.html"))
+	blogView = template.Must(template.ParseFiles("./views/blog.html"))
+	blogDetailView = template.Must(template.ParseFiles("./views/blog_detail.html"))
+	database = config.Database()
 )
 
 func Show(w http.ResponseWriter, r *http.Request) {
@@ -39,8 +41,8 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		}
 
 		todo := models.Todo{
-			Id:        id,
-			Item:      item,
+			Id: id,
+			Item: item,
 			Completed: completed,
 			CreatedAt: createdAt,
 			UpdatedAt: updatedAt,
@@ -143,8 +145,8 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 
 	// Create todo object with updated data
 	todo := models.Todo{
-		Id:        id,
-		Item:      todoData.Item,
+		Id: id,
+		Item: todoData.Item,
 		Completed: existingTodo.Completed,
 		CreatedAt: existingTodo.CreatedAt, // Preserve the original creation time
 		UpdatedAt: time.Now(), // Set updated_at to current time
@@ -177,5 +179,70 @@ func ShowHomePage(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		fmt.Println(err)
+	}
+}
+
+// GetBlog handles displaying the blog page with all blog posts
+func GetBlog(w http.ResponseWriter, r *http.Request) {
+	// Get all blogs from the database
+	blogs, err := models.GetAllBlogs()
+
+	if err != nil {
+		fmt.Println("Error retrieving blogs:", err)
+		http.Error(w, "Failed to retrieve blog posts", http.StatusInternalServerError)
+		return
+	}
+
+	// Prepare data for template
+	data := struct {
+		Blogs []models.Blog
+	}{
+		Blogs: blogs,
+	}
+
+	// Execute the blog template
+	err = blogView.Execute(w, data)
+
+	if err != nil {
+		fmt.Println("Error rendering blog template:", err)
+		http.Error(w, "Failed to render blog page", http.StatusInternalServerError)
+	}
+}
+
+// GetBlogDetail handles displaying a single blog post's details
+func GetBlogDetail(w http.ResponseWriter, r *http.Request) {
+	// Get the blog ID from URL parameters
+	vars := mux.Vars(r)
+	idParam := vars["id"]
+
+	// Convert string ID to integer
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		fmt.Println("Invalid blog ID:", err)
+		http.Error(w, "Invalid blog ID", http.StatusBadRequest)
+		return
+	}
+
+	// Get blog post by ID from the database
+	blog, err := models.GetBlog(id)
+	if err != nil {
+		fmt.Println("Error retrieving blog with ID", id, ":", err)
+		http.Error(w, "Blog post not found", http.StatusNotFound)
+		return
+	}
+
+	// Prepare data for template
+	data := struct {
+		Blog models.Blog
+	}{
+		Blog: blog,
+	}
+
+	// Execute the blog detail template
+	err = blogDetailView.Execute(w, data)
+
+	if err != nil {
+		fmt.Println("Error rendering blog detail template:", err)
+		http.Error(w, "Failed to render blog detail page", http.StatusInternalServerError)
 	}
 }

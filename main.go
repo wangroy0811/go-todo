@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"github.com/ichtrojan/go-todo/models"
 	"github.com/ichtrojan/go-todo/routes"
 	"github.com/ichtrojan/thoth"
 	"github.com/joho/godotenv"
@@ -23,6 +24,12 @@ func main() {
 	if !exist {
 		logger.Log(errors.New("PORT not set in .env"))
 		log.Fatal("PORT not set in .env")
+	}
+
+	// Initialize blog table before starting the server
+	if err := models.InitBlogTable(); err != nil {
+		logger.Log(errors.New("failed to initialize blog table"))
+		log.Fatal("Failed to initialize blog table:", err)
 	}
 
 	err := http.ListenAndServe(":"+port, routes.Init())
