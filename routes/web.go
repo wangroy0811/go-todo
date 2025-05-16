@@ -14,6 +14,8 @@ func Init() *mux.Router {
 	route.HandleFunc("/delete/{id}", controllers.Delete)
 	route.HandleFunc("/complete/{id}", controllers.Complete)
 	route.HandleFunc("/todos/{id}", controllers.UpdateTodo).Methods("PUT")
+	route.HandleFunc("/blog", controllers.GetBlog)
+	route.HandleFunc("/blog/{id}", controllers.GetBlogDetail)
 
 	return route
 }

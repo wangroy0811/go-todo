@@ -53,20 +53,22 @@ func Database() *sql.DB {
 		fmt.Println("Database Connection Successful")
 	}
 
-	_, err = database.Exec(`CREATE DATABASE gotodo`)
+	_, err = database.Exec(`CREATE DATABASE IF NOT EXISTS todo`)
 
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	_, err = database.Exec(`USE gotodo`)
+	_, err = database.Exec(`USE todo`)
 
 	if err != nil {
 		fmt.Println(err)
+		logger.Log(errors.New("Failed to use todo database"))
+		log.Fatal("Failed to use todo database:", err)
 	}
 
 	_, err = database.Exec(`
-		CREATE TABLE todos (
+		CREATE TABLE IF NOT EXISTS todos (
 		    id INT AUTO_INCREMENT,
 		    item TEXT NOT NULL,
 		    completed BOOLEAN DEFAULT FALSE,
@@ -85,7 +87,7 @@ func Database() *sql.DB {
 	err = database.QueryRow(`
 		SELECT COUNT(*) 
 		FROM information_schema.columns 
-		WHERE table_schema = 'gotodo' 
+		WHERE table_schema = 'todo' 
 		AND table_name = 'todos' 
 		AND column_name = 'created_at'
 	`).Scan(&count)
@@ -107,7 +109,7 @@ func Database() *sql.DB {
 	err = database.QueryRow(`
 		SELECT COUNT(*) 
 		FROM information_schema.columns 
-		WHERE table_schema = 'gotodo' 
+		WHERE table_schema = 'todo' 
 		AND table_name = 'todos' 
 		AND column_name = 'updated_at'
 	`).Scan(&count)

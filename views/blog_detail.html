@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Todo App - The smarter way to manage your tasks">
-    <meta name="keywords" content="todo, task management, productivity">
-    <title>TodoAI - 智能任务管理</title>
+    <meta name="description" content="Todo应用博客 - 分享任务管理和生产力提升技巧">
+    <meta name="keywords" content="todo, 任务管理, 博客, 生产力, 时间管理">
+    <title>Todo应用 - 博客详情</title>
     <style>
         /* General Styles */
         :root {
@@ -78,17 +78,6 @@
             transform: translateY(-2px);
         }
 
-        .btn-outline {
-            background-color: transparent;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-
         /* Header Styles */
         header {
             background-color: var(--white);
@@ -135,122 +124,65 @@
             cursor: pointer;
         }
 
-        /* Hero Section */
-        .hero {
-            padding: 100px 0;
+        /* Blog Detail Styles */
+        .blog-detail-header {
+            padding: 40px 0;
             text-align: center;
             background: linear-gradient(135deg, #C7D2FE, #EEF2FF);
-            border-radius: 0 0 50px 50px;
         }
 
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            color: var(--light-text);
+        .blog-detail-container {
             max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
+            padding: 60px 20px;
         }
 
-        .hero-buttons {
-            margin-top: 40px;
-        }
-
-        .hero-buttons .btn {
-            margin: 0 10px;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 100px 0;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-title h2 {
+        .blog-detail-title {
             font-size: 2.5rem;
-            color: var(--primary-color);
+            margin-bottom: 20px;
+            color: var(--text-color);
         }
 
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        .feature-card {
-            background-color: var(--white);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background-color: var(--accent-color);
-            border-radius: 50%;
+        .blog-detail-meta {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            color: var(--white);
-            font-size: 1.5rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-
-        .feature-card p {
+            justify-content: space-between;
+            margin-bottom: 30px;
+            font-size: 1rem;
             color: var(--light-text);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
         }
 
-        /* Call to Action Section */
-        .cta {
-            padding: 80px 0;
-            background: linear-gradient(135deg, #4F46E5, #6366F1);
-            text-align: center;
-            color: var(--white);
+        .blog-detail-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 30px;
         }
 
-        .cta h2 {
-            font-size: 2.5rem;
+        .blog-detail-content {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-color);
+            margin-bottom: 40px;
+        }
+
+        .blog-detail-content p {
             margin-bottom: 20px;
         }
 
-        .cta p {
-            margin-bottom: 30px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+        .blog-back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 40px;
+            font-weight: 600;
         }
 
-        .cta .btn {
-            background-color: var(--white);
-            color: var(--primary-color);
-        }
-
-        .cta .btn:hover {
-            background-color: var(--accent-color);
-            color: var(--white);
+        .blog-back-link svg {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
         }
 
         /* Footer */
@@ -321,12 +253,12 @@
 
         /* Media Queries */
         @media (max-width: 992px) {
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
             .footer-content {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .blog-detail-title {
+                font-size: 2rem;
             }
         }
 
@@ -339,38 +271,31 @@
                 display: block;
             }
 
-            .hero h1 {
-                font-size: 2.5rem;
+            .blog-detail-title {
+                font-size: 1.8rem;
             }
-
-            .features-grid {
-                grid-template-columns: 1fr;
+            
+            .blog-detail-container {
+                padding: 40px 20px;
             }
         }
 
         @media (max-width: 576px) {
-            .hero {
-                padding: 60px 0;
+            .blog-detail-header {
+                padding: 30px 0;
             }
 
-            .hero h1 {
-                font-size: 2rem;
+            .blog-detail-title {
+                font-size: 1.5rem;
             }
-
-            .hero p {
-                font-size: 1rem;
+            
+            .blog-detail-meta {
+                flex-direction: column;
+                gap: 5px;
             }
 
             .footer-content {
                 grid-template-columns: 1fr;
-            }
-
-            .section-title h2 {
-                font-size: 2rem;
-            }
-
-            .cta h2 {
-                font-size: 2rem;
             }
         }
     </style>
@@ -382,68 +307,49 @@
             <nav class="navbar">
                 <div class="logo">TodoAI</div>
                 <ul class="nav-links">
-                    <li><a href="#features">功能</a></li>
-                    <li><a href="#pricing">价格</a></li>
+                    <li><a href="/home#features">功能</a></li>
+                    <li><a href="/home#pricing">价格</a></li>
                     <li><a href="/blog">博客</a></li>
-                    <li><a href="#docs">文档</a></li>
-                    <li><a href="/" class="btn btn-primary">开始使用</a></li>
+                    <li><a href="/home#docs">文档</a></li>
+                    <li><a href="/" class="btn btn-primary">任务管理</a></li>
                 </ul>
                 <div class="mobile-menu-btn">☰</div>
             </nav>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
+    <!-- Blog Detail Content -->
+    <div class="blog-detail-header">
         <div class="container">
-            <h1>使用AI助手管理任务</h1>
-            <p>TodoAI通过智能优先级排序、智能提醒和生产力分析，帮助您在一个简单的应用程序中高效组织任务。</p>
-            <div class="hero-buttons">
-                <a href="/" class="btn btn-primary">立即开始</a>
-                <a href="#features" class="btn btn-outline">了解更多</a>
-            </div>
+            <h1>博客详情</h1>
         </div>
-    </section>
+    </div>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="container">
-            <div class="section-title">
-                <h2>为何选择TodoAI</h2>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">✓</div>
-                    <h3>智能优先级排序</h3>
-                    <p>我们的AI会分析您的任务，并根据截止日期、重要性和您的工作模式自动设定优先级。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⏰</div>
-                    <h3>智能提醒</h3>
-                    <p>通过了解您最高效的工作时间，在恰当的时机发送上下文感知提醒。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>生产力分析</h3>
-                    <p>通过详细的数据分析和改进建议，了解您的生产力模式。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔄</div>
-                    <h3>无缝同步</h3>
-                    <p>通过所有设备的实时同步，随时随地访问您的任务。</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    <div class="container">
+        <div class="blog-detail-container">
+            <a href="/blog" class="blog-back-link">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                返回博客列表
+            </a>
 
-    <!-- Call to Action -->
-    <section class="cta">
-        <div class="container">
-            <h2>准备好提升您的生产力了吗？</h2>
-            <p>加入数千名已经通过TodoAI改变任务管理体验的用户。今天免费开始使用！</p>
-            <a href="/" class="btn">立即开始使用TodoAI</a>
+            <h1 class="blog-detail-title">{{.Blog.Title}}</h1>
+            
+            <div class="blog-detail-meta">
+                <span>作者: {{.Blog.Author}}</span>
+                <span>{{.Blog.FormatCreatedAt}}</span>
+            </div>
+            
+            {{if .Blog.Image}}
+            <img src="{{.Blog.Image}}" alt="{{.Blog.Title}}" class="blog-detail-image">
+            {{end}}
+            
+            <div class="blog-detail-content">
+                {{.Blog.Content}}
+            </div>
         </div>
-    </section>
+    </div>
 
     <!-- Footer -->
     <footer>
@@ -456,19 +362,19 @@
                 <div class="footer-links">
                     <h3>产品</h3>
                     <ul>
-                        <li><a href="#features">功能</a></li>
-                        <li><a href="#pricing">价格</a></li>
-                        <li><a href="#docs">文档</a></li>
-                        <li><a href="#changelog">更新日志</a></li>
+                        <li><a href="/home#features">功能</a></li>
+                        <li><a href="/home#pricing">价格</a></li>
+                        <li><a href="/home#docs">文档</a></li>
+                        <li><a href="/home#changelog">更新日志</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
                     <h3>公司</h3>
                     <ul>
-                        <li><a href="#about">关于我们</a></li>
+                        <li><a href="/home#about">关于我们</a></li>
                         <li><a href="/blog">博客</a></li>
-                        <li><a href="#careers">招聘</a></li>
-                        <li><a href="#contact">联系我们</a></li>
+                        <li><a href="/home#careers">招聘</a></li>
+                        <li><a href="/home#contact">联系我们</a></li>
                     </ul>
                 </div>
                 <div class="footer-social">
