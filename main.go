@@ -5,7 +5,6 @@ import (
 	"github.com/ichtrojan/go-todo/models"
 	"github.com/ichtrojan/go-todo/routes"
 	"github.com/ichtrojan/thoth"
-	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
