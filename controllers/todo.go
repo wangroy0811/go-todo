@@ -17,7 +17,7 @@ var (
 	item string
 	completed int
 	createdAt time.Time
-	var updatedAt time.Time
+	updatedAt time.Time
 	view = template.Must(template.ParseFiles("./views/index.html"))
 	blogView = template.Must(template.ParseFiles("./views/blog.html"))
 	blogDetailView = template.Must(template.ParseFiles("./views/blog_detail.html"))

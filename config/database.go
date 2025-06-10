@@ -68,7 +68,7 @@ func Database() *sql.DB {
 	}
 
 	_, err = database.Exec(`
-		CREAT TABLE IF NOT EXISTS todos (
+		CREATE TABLE IF NOT EXISTS todos (
 		    id INT AUTO_INCREMENT,
 		    item TEXT NOT NULL,
 		    completed BOOLEAN DEFAULT FALSE,
