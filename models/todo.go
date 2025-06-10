@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type todo struct {
+type Todo struct {
 	Id        int
 	Item      string
 	Completed int
