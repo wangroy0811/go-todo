@@ -16,6 +16,7 @@ var (
 	id int
 	item string
 	completed int
+	newItem string
 	createdAt time.Time
 	updatedAt time.Time
 	view = template.Must(template.ParseFiles("./views/index.html"))
