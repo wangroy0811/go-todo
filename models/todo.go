@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type todo struct {
+type Todo struct {
 	Id        int
 	Item      string
 	Completed int
@@ -15,25 +15,25 @@ type todo struct {
 }
 
 // FormatCreatedAt formats and returns the creation time as a string
-func (todo Todo) FormatCreatedAt() string {
+func (t Todo) FormatCreatedAt() string {
 	loc, err := time.LoadLocation("Asia/Shanghai")
 	if err != nil {
 		// Fallback to UTC if location loading fails
-		return todo.CreatedAt.Format("2006-01-02 15:04:05")
+		return t.CreatedAt.Format("2006-01-02 15:04:05")
 	}
 	// Convert the time to China timezone (UTC+8)
-	return todo.CreatedAt.In(loc).Format("2006-01-02 15:04:05")
+	return t.CreatedAt.In(loc).Format("2006-01-02 15:04:05")
 }
 
 // FormatUpdatedAt formats and returns the update time as a string
-func (todo Todo) FormatUpdatedAt() string {
+func (t Todo) FormatUpdatedAt() string {
 	loc, err := time.LoadLocation("Asia/Shanghai")
 	if err != nil {
 		// Fallback to UTC if location loading fails
-		return todo.UpdatedAt.Format("January 02, 2006 at 15:04:05")
+		return t.UpdatedAt.Format("January 02, 2006 at 15:04:05")
 	}
 	// Convert the time to China timezone (UTC+8)
-	return todo.UpdatedAt.In(loc).Format("January 02, 2006 at 15:04:05")
+	return t.UpdatedAt.In(loc).Format("January 02, 2006 at 15:04:05")
 }
 
 // UpdateTodo updates an existing todo item in the database
