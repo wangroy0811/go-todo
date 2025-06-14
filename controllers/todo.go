@@ -64,7 +64,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 	item := r.FormValue("item")
 	currentTime := time.Now()
 
-	_, err := database.Exec(`INSERT INTO todos (item, created_at, updated_at) VALUE (?, ?, ?)`, newItem, currentTime, currentTime)
+	_, err := database.Exec(`INSERT INTO todos (item, created_at, updated_at) VALUES (?, ?, ?)`, item, currentTime, currentTime)
 
 	if err != nil {
 		fmt.Println(err)
