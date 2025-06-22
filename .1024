@@ -6,4 +6,7 @@
 run_command: 'go run main.go'
 # Command to install or update dependencies, will execute each time a new thread created to ensure dependencies up-to-date
 dependency_command: 'go mod download'
-linter_config: []
+linter_config:
+  - config_path: '.golangci.yml'
+    type: 'golangci-lint'
+    language: 'go'
