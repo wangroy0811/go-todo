@@ -41,6 +41,9 @@ tmp/
 .tmp/
 *.tmp
 
+# Clacky-related configuration
+.clackyai/
+
 # System files
 .DS_Store
 Thumbs.db
