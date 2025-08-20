@@ -1,11 +1,11 @@
 /* CSS Variables for Consistent Design */
 :root {
-    --primary-color: #6366F1;
-    --secondary-color: #4F46E5;
-    --accent-color: #818CF8;
+    --primary-color: #DC2626;
+    --secondary-color: #B91C1C;
+    --accent-color: #F87171;
     --text-color: #1F2937;
     --light-text: #6B7280;
-    --background: #EFF6FF;
+    --background: #FEF2F2;
     --white: #FFFFFF;
     --border-color: #E5E7EB;
     --success: #10B981;
@@ -80,7 +80,7 @@ a:hover {
 .btn-primary:hover {
     background-color: var(--secondary-color);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 .btn-secondary {
@@ -184,7 +184,7 @@ a:hover {
 
 .nav-links a:hover {
     color: var(--primary-color);
-    background-color: rgba(99, 102, 241, 0.1);
+    background-color: rgba(220, 38, 38, 0.1);
 }
 
 .mobile-menu-btn {
@@ -198,7 +198,7 @@ a:hover {
 .hero {
     padding: 100px 0;
     text-align: center;
-    background: linear-gradient(135deg, #C7D2FE 0%, #EEF2FF 100%);
+    background: linear-gradient(135deg, #FECACA 0%, #FEF2F2 100%);
     border-radius: 0 0 50px 50px;
     margin-bottom: 80px;
 }
