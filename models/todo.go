@@ -39,23 +39,23 @@ func (t Todo) FormatUpdatedAt() string {
 // UpdateTodo updates an existing todo item in the database
 func UpdateTodo(todo Todo) error {
 	fmt.Println("UpdateTodo received todo:", todo.Id, todo.Item, todo.Completed, "UpdatedAt:", todo.UpdatedAt.Format("2006-01-02 15:04:05"))
-	
+
 	database := config.Database()
 
-	fmt.Println("Executing SQL with parameters:", 
-		"item=", todo.Item, 
-		"completed=", todo.Completed, 
-		"updated_at=", todo.UpdatedAt.Format("2006-01-02 15:04:05"), 
+	fmt.Println("Executing SQL with parameters:",
+		"item=", todo.Item,
+		"completed=", todo.Completed,
+		"updated_at=", todo.UpdatedAt.Format("2006-01-02 15:04:05"),
 		"id=", todo.Id)
-	
-	_, err := database.Exec(`UPDATE todos SET item = ?, completed = ?, updated_at = ? WHERE id = ?`, 
+
+	_, err := database.Exec(`UPDATE todos SET item = ?, completed = ?, updated_at = ? WHERE id = ?`,
 		todo.Item, todo.Completed, todo.UpdatedAt, todo.Id)
 
 	if err != nil {
 		fmt.Println("SQL update error:", err)
 		return err
 	}
-	
+
 	fmt.Println("SQL update successful for todo ID:", todo.Id)
 	return err
 }
