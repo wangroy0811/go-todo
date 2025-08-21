@@ -119,6 +119,97 @@
                     {{end}}
                     </tbody>
                 </table>
+                
+                <!-- 分页导航 -->
+                {{if gt .Pagination.TotalPages 1}}
+                <nav aria-label="Todo列表分页">
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="pagination-info">
+                            <small class="text-muted">
+                                共 {{.Pagination.TotalRecords}} 条记录，当前第 {{.Pagination.CurrentPage}}/{{.Pagination.TotalPages}} 页
+                            </small>
+                        </div>
+                        <ul class="pagination pagination-sm mb-0">
+                            <!-- 上一页 -->
+                            {{if .Pagination.HasPrevious}}
+                                <li class="page-item">
+                                    <a class="page-link" href="/?page={{.Pagination.PreviousPage}}" aria-label="上一页">
+                                        <span aria-hidden="true">&laquo;</span> 上一页
+                                    </a>
+                                </li>
+                            {{else}}
+                                <li class="page-item disabled">
+                                    <span class="page-link" aria-label="上一页">
+                                        <span aria-hidden="true">&laquo;</span> 上一页
+                                    </span>
+                                </li>
+                            {{end}}
+                            
+                            <!-- 第一页 -->
+                            {{if gt .Pagination.CurrentPage 1}}
+                                <li class="page-item">
+                                    <a class="page-link" href="/?page=1">1</a>
+                                </li>
+                            {{end}}
+                            
+                            <!-- 省略号 -->
+                            {{if gt .Pagination.CurrentPage 3}}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            {{end}}
+                            
+                            <!-- 当前页的前一页 -->
+                            {{if gt .Pagination.CurrentPage 2}}
+                                <li class="page-item">
+                                    <a class="page-link" href="/?page={{.Pagination.PreviousPage}}">{{.Pagination.PreviousPage}}</a>
+                                </li>
+                            {{end}}
+                            
+                            <!-- 当前页 -->
+                            <li class="page-item active">
+                                <span class="page-link">{{.Pagination.CurrentPage}}</span>
+                            </li>
+                            
+                            <!-- 当前页的后一页 -->
+                            {{if lt .Pagination.CurrentPage .Pagination.TotalPages}}
+                                <li class="page-item">
+                                    <a class="page-link" href="/?page={{.Pagination.NextPage}}">{{.Pagination.NextPage}}</a>
+                                </li>
+                            {{end}}
+                            
+                            <!-- 省略号 -->
+                            {{if and (gt .Pagination.TotalPages 3) (lt .Pagination.CurrentPage .Pagination.TotalPages)}}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            {{end}}
+                            
+                            <!-- 最后一页 -->
+                            {{if and (gt .Pagination.TotalPages 1) (lt .Pagination.CurrentPage .Pagination.TotalPages)}}
+                                <li class="page-item">
+                                    <a class="page-link" href="/?page={{.Pagination.TotalPages}}">{{.Pagination.TotalPages}}</a>
+                                </li>
+                            {{end}}
+                            
+                            <!-- 下一页 -->
+                            {{if .Pagination.HasNext}}
+                                <li class="page-item">
+                                    <a class="page-link" href="/?page={{.Pagination.NextPage}}" aria-label="下一页">
+                                        下一页 <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            {{else}}
+                                <li class="page-item disabled">
+                                    <span class="page-link" aria-label="下一页">
+                                        下一页 <span aria-hidden="true">&raquo;</span>
+                                    </span>
+                                </li>
+                            {{end}}
+                        </ul>
+                    </div>
+                </nav>
+                {{end}}
             </div>
         </div>
     </div>

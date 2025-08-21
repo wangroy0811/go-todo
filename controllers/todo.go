@@ -13,23 +13,63 @@ import (
 )
 
 var (
-	id int
-	item string
-	completed int
-	createdAt time.Time
-	updatedAt time.Time
-	view = template.Must(template.ParseFiles("./views/index.html"))
-	blogView = template.Must(template.ParseFiles("./views/blog.html"))
+	id             int
+	item           string
+	completed      int
+	createdAt      time.Time
+	updatedAt      time.Time
+	view           = template.Must(template.ParseFiles("./views/index.html"))
+	blogView       = template.Must(template.ParseFiles("./views/blog.html"))
 	blogDetailView = template.Must(template.ParseFiles("./views/blog_detail.html"))
-	database = config.Database()
+	database       = config.Database()
 )
 
 func Show(w http.ResponseWriter, r *http.Request) {
-	statement, err := database.Query(`SELECT id, item, completed, created_at, updated_at FROM todos`)
+	// 获取分页参数
+	pageStr := r.URL.Query().Get("page")
+	page := 1
+	if pageStr != "" {
+		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
+			page = p
+		}
+	}
+
+	// 分页参数
+	const perPage = 20
+	offset := (page - 1) * perPage
+
+	// 查询总记录数
+	var totalRecords int
+	err := database.QueryRow(`SELECT COUNT(*) FROM todos`).Scan(&totalRecords)
+	if err != nil {
+		fmt.Println("查询总记录数失败:", err)
+		totalRecords = 0
+	}
+
+	// 计算分页信息
+	totalPages := (totalRecords + perPage - 1) / perPage
+	if totalPages < 1 {
+		totalPages = 1
+	}
+
+	// 限制页面在有效范围内
+	if page > totalPages {
+		page = totalPages
+	}
+	if page < 1 {
+		page = 1
+	}
+
+	// 重新计算offset（在页面修正后）
+	offset = (page - 1) * perPage
+
+	// 查询当前页的数据
+	statement, err := database.Query(`SELECT id, item, completed, created_at, updated_at FROM todos ORDER BY created_at DESC LIMIT ? OFFSET ?`, perPage, offset)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("查询todo数据失败:", err)
 	}
+	defer statement.Close()
 
 	var todos []models.Todo
 
@@ -37,12 +77,13 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		err = statement.Scan(&id, &item, &completed, &createdAt, &updatedAt)
 
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("扫描数据失败:", err)
+			continue
 		}
 
 		todo := models.Todo{
-			Id: id,
-			Item: item,
+			Id:        id,
+			Item:      item,
 			Completed: completed,
 			CreatedAt: createdAt,
 			UpdatedAt: updatedAt,
@@ -51,8 +92,21 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		todos = append(todos, todo)
 	}
 
+	// 构建分页信息
+	pagination := models.Pagination{
+		CurrentPage:  page,
+		TotalPages:   totalPages,
+		TotalRecords: totalRecords,
+		PerPage:      perPage,
+		HasNext:      page < totalPages,
+		HasPrevious:  page > 1,
+		NextPage:     page + 1,
+		PreviousPage: page - 1,
+	}
+
 	data := models.View{
-		Todos: todos,
+		Todos:      todos,
+		Pagination: pagination,
 	}
 
 	_ = view.Execute(w, data)
@@ -145,11 +199,11 @@ func UpdateTodo(w http.ResponseWriter, r *http.Request) {
 
 	// Create todo object with updated data
 	todo := models.Todo{
-		Id: id,
-		Item: todoData.Item,
+		Id:        id,
+		Item:      todoData.Item,
 		Completed: existingTodo.Completed,
 		CreatedAt: existingTodo.CreatedAt, // Preserve the original creation time
-		UpdatedAt: time.Now(), // Set updated_at to current time
+		UpdatedAt: time.Now(),             // Set updated_at to current time
 	}
 	fmt.Println("Setting updated time to:", todo.UpdatedAt.Format("2006-01-02 15:04:05"))
 
